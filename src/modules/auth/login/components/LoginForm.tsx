@@ -2,9 +2,12 @@ import { Button, PasswordInput, Stack, Text, TextInput } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
 import { useNavigate } from "react-router-dom";
 import { loginSchema, TLoginSchema } from "../schemas";
+import { useLogin } from "../hooks/useLogin";
+import toast from "react-hot-toast";
 
 const LoginForm = () => {
   const navigate = useNavigate();
+  const { mutate: login, isPending } = useLogin();
 
   const navigateRegister = () => {
     navigate("/register");
@@ -19,7 +22,16 @@ const LoginForm = () => {
   });
 
   const onSubmit = (values: TLoginSchema) => {
-    console.log(values);
+    login(values, {
+      onSuccess: async () => {
+        toast.success("User signed in successfully");
+        form.reset();
+        navigate("/app/feed");
+      },
+      onError: () => {
+        toast.success("Something went wrong");
+      },
+    });
   };
 
   return (
@@ -43,7 +55,9 @@ const LoginForm = () => {
           >
             register
           </Text>
-          <Button type="submit">Login</Button>
+          <Button loading={isPending} disabled={isPending} type="submit">
+            Login
+          </Button>
         </Stack>
       </Stack>
     </form>

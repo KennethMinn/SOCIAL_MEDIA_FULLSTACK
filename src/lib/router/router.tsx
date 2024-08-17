@@ -1,32 +1,63 @@
 import { createBrowserRouter } from "react-router-dom";
 import {
+  LazyFeedListing,
   LazyHome,
   LazyLoginPage,
   LazyRegisterPage,
 } from "../../components/lazy/lazyPages";
 import RootLayout from "../../layouts/RootLayout";
+import DesktopLayout from "../../layouts/DesktopLayout";
+import AuthMiddleware from "../../middlewares/AuthMiddleware";
+import { useViewportSize } from "@mantine/hooks";
+import { ReactNode, useEffect, useState } from "react";
+import MobileLayout from "../../layouts/MobileLayout";
 
-export const publicRoutes = [
-  {
-    path: "/",
-    element: <RootLayout />,
-    children: [
-      {
-        index: true,
-        element: <LazyHome />,
-      },
-      {
-        path: "login",
-        element: <LazyLoginPage />,
-      },
-      {
-        path: "register",
-        element: <LazyRegisterPage />,
-      },
-    ],
-  },
-];
+export const useRouter = () => {
+  const { width } = useViewportSize();
+  const [currentLayout, setCurrentLayout] = useState<ReactNode | null>(null);
 
-export const authRoutes = [];
+  useEffect(() => {
+    if (width <= 766) {
+      setCurrentLayout(<MobileLayout />);
+    } else {
+      setCurrentLayout(<DesktopLayout />);
+    }
+  }, [width]);
 
-export const router = createBrowserRouter([...publicRoutes, ...authRoutes]);
+  const publicRoutes = [
+    {
+      path: "/",
+      element: <RootLayout />,
+      children: [
+        {
+          index: true,
+          element: <LazyHome />,
+        },
+        {
+          path: "login",
+          element: <LazyLoginPage />,
+        },
+        {
+          path: "register",
+          element: <LazyRegisterPage />,
+        },
+      ],
+    },
+  ];
+
+  const authRoutes = [
+    {
+      path: "/app",
+      element: <AuthMiddleware>{currentLayout}</AuthMiddleware>,
+      children: [
+        {
+          path: "feed",
+          element: <LazyFeedListing />,
+        },
+      ],
+    },
+  ];
+
+  const router = createBrowserRouter([...publicRoutes, ...authRoutes]);
+  return router;
+};
