@@ -11,13 +11,14 @@ import AuthMiddleware from "../../middlewares/AuthMiddleware";
 import { useViewportSize } from "@mantine/hooks";
 import { ReactNode, useEffect, useState } from "react";
 import MobileLayout from "../../layouts/MobileLayout";
+import { SCREEN_SIZE } from "../../utils/constants";
 
 export const useRouter = () => {
   const { width } = useViewportSize();
   const [currentLayout, setCurrentLayout] = useState<ReactNode | null>(null);
 
   useEffect(() => {
-    if (width <= 766) {
+    if (width <= SCREEN_SIZE.sm) {
       setCurrentLayout(<MobileLayout />);
     } else {
       setCurrentLayout(<DesktopLayout />);

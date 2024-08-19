@@ -64,9 +64,21 @@ const UserProfile: FC<UserProfileProp> = ({ opened, close, user }) => {
   };
 
   return (
-    <Modal opened={opened} onClose={close} title="User Profile">
+    <Modal
+      size={450}
+      centered
+      opened={opened}
+      onClose={close}
+      title="User Profile"
+      styles={{
+        title: {
+          fontSize: "20px",
+          fontWeight: 600,
+        },
+      }}
+    >
       <form onSubmit={form.onSubmit(onSubmit)}>
-        <Stack>
+        <Stack mt={10}>
           <Avatar
             w={100}
             h={100}
@@ -78,7 +90,7 @@ const UserProfile: FC<UserProfileProp> = ({ opened, close, user }) => {
             multiple
           >
             {(props) => (
-              <Button leftSection={<IconCloudUpload />} w={180} {...props}>
+              <Button leftSection={<IconCloudUpload />} w={160} {...props}>
                 Upload image
               </Button>
             )}
@@ -89,6 +101,7 @@ const UserProfile: FC<UserProfileProp> = ({ opened, close, user }) => {
             label="Name"
             placeholder="Enter name"
           />
+          <TextInput label="Email" value={user?.email} disabled />
           <Button loading={isPending} disabled={isPending} type="submit">
             Submit
           </Button>
