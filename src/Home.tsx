@@ -16,7 +16,7 @@ const Home = () => {
   return (
     <>
       <button onClick={() => mutate()}>logout</button>
-      <Button onClick={navigateLogin}>Home</Button>
+      <Button onClick={navigateLogin}>Login</Button>
     </>
   );
 };

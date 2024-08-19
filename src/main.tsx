@@ -7,6 +7,7 @@ import "@mantine/core/styles.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createTheme, MantineProvider } from "@mantine/core";
 import { Toaster } from "react-hot-toast";
+import { SCREEN_SIZE } from "./utils/constants.ts";
 
 const queryClient = new QueryClient({
   // defaultOptions: {
@@ -18,11 +19,11 @@ const queryClient = new QueryClient({
 
 const theme = createTheme({
   breakpoints: {
-    xs: "300px",
-    sm: "768px",
-    md: "992px",
-    lg: "1200px",
-    xl: "1408px",
+    xs: SCREEN_SIZE.xs + "px",
+    sm: SCREEN_SIZE.sm + "px",
+    md: SCREEN_SIZE.md + "px",
+    lg: SCREEN_SIZE.lg + "px",
+    xl: SCREEN_SIZE.xl + "px",
   },
 });
 
