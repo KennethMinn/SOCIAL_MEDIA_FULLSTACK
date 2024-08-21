@@ -20,8 +20,14 @@ const MobileHeader = () => {
     <Group
       h="100%"
       p="sm"
+      bg="white"
       justify="space-between"
-      style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.3)" }}
+      style={{
+        borderBottom: "1px solid rgba(0, 0, 0, 0.3)",
+        position: "sticky",
+        top: 0,
+        zIndex: 10,
+      }}
     >
       <Flex align="center" gap="lg">
         Logo

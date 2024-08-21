@@ -1,17 +1,23 @@
 import { Button } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
-import { useGetCurrentUser } from "./modules/auth/login/hooks/useGetCurrentUser";
 import { useLogout } from "./modules/auth/login/hooks/useLogout";
+import { useAuth } from "./hooks/auth/useAuth";
+import { useEffect } from "react";
 
 const Home = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const { data } = useGetCurrentUser();
   const { mutate } = useLogout();
-  console.log(data);
 
   const navigateLogin = () => {
     navigate("/login");
   };
+
+  useEffect(() => {
+    if (user) {
+      navigate("/app/feed");
+    }
+  }, [user, navigate]);
 
   return (
     <>

@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import "@mantine/core/styles.css";
+import "@mantine/dropzone/styles.css";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createTheme, MantineProvider } from "@mantine/core";

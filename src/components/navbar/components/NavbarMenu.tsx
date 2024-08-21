@@ -17,6 +17,7 @@ const NavbarMenu: React.FC<NavbarMenuProps> = ({ isOpen }) => {
         <Box key={i}>
           {isOpen ? (
             <NavLink
+              styles={{ label: { fontSize: "16px" } }}
               py={15}
               style={{ border: "1px solid #efeef0", borderRadius: "8px" }}
               onClick={() => navigate(navMenu.path)}

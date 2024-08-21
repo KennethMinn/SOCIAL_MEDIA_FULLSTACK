@@ -1,4 +1,4 @@
-import { AppShell, Grid } from "@mantine/core";
+import { AppShell, Box, Grid } from "@mantine/core";
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "../components/navbar/Navbar";
@@ -25,7 +25,7 @@ const DesktopLayout = () => {
             <Outlet />
           </Grid.Col>
           <Grid.Col span={{ md: 5, lg: 4 }} hidden={width <= SCREEN_SIZE.md}>
-            sdfsd
+            <Box style={{ position: "fixed" }}>sfad</Box>
           </Grid.Col>
         </Grid>
       </AppShell.Main>

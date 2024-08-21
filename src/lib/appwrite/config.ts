@@ -13,6 +13,7 @@ export const appwriteConfig = {
   profileStorageId: import.meta.env.VITE_APPWRITE_PROFILE_STORAGE_ID,
   postStorageId: import.meta.env.VITE_APPWRITE_POST_STORAGE_ID,
   userCollectionId: import.meta.env.VITE_APPWRITE_USER_COLLECTION_ID,
+  postCollectionId: import.meta.env.VITE_APPWRITE_POST_COLLECTION_ID,
 };
 
 client

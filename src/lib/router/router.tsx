@@ -3,6 +3,7 @@ import {
   LazyFeedListing,
   LazyHome,
   LazyLoginPage,
+  LazyPostCreatePage,
   LazyRegisterPage,
 } from "../../components/lazy/lazyPages";
 import RootLayout from "../../layouts/RootLayout";
@@ -54,6 +55,10 @@ export const useRouter = () => {
         {
           path: "feed",
           element: <LazyFeedListing />,
+        },
+        {
+          path: "feed/create-post",
+          element: <LazyPostCreatePage />,
         },
       ],
     },

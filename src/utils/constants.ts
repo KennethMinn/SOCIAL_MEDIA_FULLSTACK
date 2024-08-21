@@ -5,3 +5,13 @@ export enum SCREEN_SIZE {
   lg = 1200,
   xl = 1408,
 }
+
+export const dummyTags = [
+  "fyp",
+  "fy",
+  "lethwei",
+  "muaythai",
+  "kickboxing",
+  "boxing",
+  "wrestling",
+];

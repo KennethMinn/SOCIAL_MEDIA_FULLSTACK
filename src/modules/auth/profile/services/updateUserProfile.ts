@@ -24,6 +24,8 @@ export const updateUserProfile = async (payload: Payload) => {
     const uploadedFile = (await uploadFile(profile, storageId)) as Models.File;
     const fileUrl = getFilePreview(uploadedFile.$id, storageId);
 
+    if (!fileUrl) await deleteFile(uploadedFile.$id, storageId);
+
     image = { profile: fileUrl, profileID: uploadedFile.$id };
 
     //delete previous profileId
@@ -38,8 +40,6 @@ export const updateUserProfile = async (payload: Payload) => {
   }
 
   const data = { ...payload.data, ...image };
-
-  console.log(data);
 
   await database.updateDocument(
     appwriteConfig.databaseId,
