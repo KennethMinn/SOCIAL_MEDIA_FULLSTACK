@@ -7,7 +7,7 @@ export const getInfinitePosts = async ({
 }: {
   pageParam: string | null;
 }) => {
-  const queries = [Query.orderDesc("$createdAt"), Query.limit(2)];
+  const queries = [Query.orderDesc("$createdAt"), Query.limit(6)];
 
   if (pageParam) {
     queries.push(Query.cursorAfter(pageParam)); // pageParam - the id of the last document of previous page

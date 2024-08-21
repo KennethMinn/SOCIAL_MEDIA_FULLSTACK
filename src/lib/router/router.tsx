@@ -60,6 +60,10 @@ export const useRouter = () => {
           path: "feed/create-post",
           element: <LazyPostCreatePage />,
         },
+        {
+          path: "feed/edit-post",
+          element: <LazyPostCreatePage />,
+        },
       ],
     },
   ];

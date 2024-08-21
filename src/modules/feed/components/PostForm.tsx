@@ -8,33 +8,40 @@ import {
   Transition,
 } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
-import { postCreateSchema, TPostCreateSchema } from "../schemas";
 import { dummyTags, SCREEN_SIZE } from "../../../utils/constants";
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import MyDropZone from "../../../components/MyDropZone";
 import { useHover, useViewportSize } from "@mantine/hooks";
 import { useCreatePost } from "../hooks/useCreatePost";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../hooks/auth/useAuth";
+import { PostDocument } from "../types";
+import { postFormSchema, TPostFormSchema } from "../schemas";
+import { useUpdatePost } from "../hooks/useUpdatePost";
 
-const PostCreateForm = () => {
+interface PostFormProps {
+  post: PostDocument;
+}
+
+const PostForm: FC<PostFormProps> = ({ post }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { hovered, ref } = useHover();
   const { width } = useViewportSize();
   const [image, setImage] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | ArrayBuffer | null>(
-    null
-  );
+  const [previewUrl, setPreviewUrl] = useState<
+    string | ArrayBuffer | URL | null
+  >(post?.image ?? null);
   const { mutate: createPost, isPending: isCreating } = useCreatePost();
+  const { mutate: updatePost, isPending: isUpdating } = useUpdatePost();
 
-  const form = useForm<TPostCreateSchema>({
+  const form = useForm<TPostFormSchema>({
     initialValues: {
-      caption: "",
-      tags: [],
+      caption: post ? post.caption : "",
+      tags: post ? post.tags : [],
     },
-    validate: zodResolver(postCreateSchema),
+    validate: zodResolver(postFormSchema),
   });
 
   const onDrop = (files: File[]) => {
@@ -44,7 +51,7 @@ const PostCreateForm = () => {
     }
   };
 
-  const onSubmit = (values: TPostCreateSchema) => {
+  const onSubmit = (values: TPostFormSchema) => {
     if (user) {
       const data = { ...values, file: image, authorId: user.$id };
       createPost(data, {
@@ -60,6 +67,20 @@ const PostCreateForm = () => {
     }
   };
 
+  const onEdit = (values: TPostFormSchema) => {
+    const data = { ...values, file: image, post };
+    updatePost(data, {
+      onSuccess: () => {
+        toast.success("Post updated successfully");
+        form.reset();
+        navigate("/app/feed");
+      },
+      onError: () => {
+        toast.error("Something went wrong");
+      },
+    });
+  };
+
   useEffect(() => {
     if (image) {
       const objectUrl = URL.createObjectURL(image);
@@ -70,7 +91,7 @@ const PostCreateForm = () => {
   }, [image]);
 
   return (
-    <form onSubmit={form.onSubmit(onSubmit)}>
+    <form onSubmit={form.onSubmit(post ? onEdit : onSubmit)}>
       <Stack w={{ md: 500 }}>
         <TextInput
           label="Caption"
@@ -134,12 +155,18 @@ const PostCreateForm = () => {
           </Box>
         )}
 
-        <Button loading={isCreating} disabled={isCreating} type="submit">
-          Create Post
-        </Button>
+        {post ? (
+          <Button loading={isUpdating} disabled={isUpdating} type="submit">
+            Edit Post
+          </Button>
+        ) : (
+          <Button loading={isCreating} disabled={isCreating} type="submit">
+            Create Post
+          </Button>
+        )}
       </Stack>
     </form>
   );
 };
 
-export default PostCreateForm;
+export default PostForm;

@@ -1,4 +1,4 @@
-import { ID, Models } from "appwrite";
+import { Models } from "appwrite";
 import { appwriteConfig, database } from "../../../lib/appwrite/config";
 import {
   deleteFile,
@@ -6,20 +6,19 @@ import {
   uploadFile,
 } from "../../../lib/appwrite/storage";
 import { TPostFormSchema } from "../schemas";
+import { PostDocument } from "../types";
 
 export interface Payload extends TPostFormSchema {
+  post: PostDocument;
   file: File | null;
-  authorId: string;
 }
 
-export const createPost = async (payload: Payload) => {
+export const updatePost = async (payload: Payload) => {
   let image;
-  console.log(payload);
-
   const storageId = appwriteConfig.postStorageId;
 
   if (!payload.file) {
-    image = { image: null, imageId: null };
+    image = { image: payload.post.image, imageId: payload.post.imageId };
   } else {
     const uploadedFile = (await uploadFile(
       payload.file,
@@ -31,14 +30,15 @@ export const createPost = async (payload: Payload) => {
     if (!fileUrl) await deleteFile(uploadedFile.$id, storageId);
 
     image = { image: fileUrl, imageId: uploadedFile.$id };
+
+    await deleteFile(payload.post.imageId, storageId);
   }
 
-  await database.createDocument(
+  await database.updateDocument(
     appwriteConfig.databaseId,
     appwriteConfig.postCollectionId,
-    ID.unique(),
+    payload.post.$id,
     {
-      author: payload.authorId,
       caption: payload.caption,
       tags: payload.tags,
       ...image,

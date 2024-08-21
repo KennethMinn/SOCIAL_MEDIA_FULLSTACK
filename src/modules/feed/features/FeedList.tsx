@@ -13,8 +13,6 @@ const FeedList = () => {
     if (inView) fetchNextPage();
   }, [inView]);
 
-  console.log(hasNextPage);
-
   return (
     <Stack align="center">
       {isLoading ? (
@@ -22,7 +20,7 @@ const FeedList = () => {
       ) : (
         <Grid gutter={{ xs: 15, md: 25, lg: 35 }}>
           {posts?.map((post, i) => (
-            <Grid.Col span={{ sm: 12, md: 6 }} key={i}>
+            <Grid.Col span={{ sm: 12, md: 4 }} key={i}>
               <PostCard post={post} />
             </Grid.Col>
           ))}

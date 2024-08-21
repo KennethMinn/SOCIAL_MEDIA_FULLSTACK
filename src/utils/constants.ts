@@ -9,6 +9,7 @@ export enum SCREEN_SIZE {
 export const dummyTags = [
   "fyp",
   "fy",
+  "coding",
   "lethwei",
   "muaythai",
   "kickboxing",
