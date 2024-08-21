@@ -1,13 +1,11 @@
-import { AppShell, Avatar, Burger, Flex, Group, Menu } from "@mantine/core";
-import React from "react";
+import { AppShell, Avatar, Flex, Group, Menu } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
-import { NavbarProps } from "../../../modules/auth/login/types";
 import { useLogout } from "../../../modules/auth/login/hooks/useLogout";
 import { useGetCurrentUser } from "../../../modules/auth/login/hooks/useGetCurrentUser";
 import UserProfile from "../../../modules/auth/profile/features/UserProfileForm";
 import { useDisclosure } from "@mantine/hooks";
 
-const NavbarHeader: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
+const NavbarHeader = () => {
   const navigate = useNavigate();
   const { data: user } = useGetCurrentUser();
   const { mutate: signOutUser } = useLogout();
@@ -22,12 +20,6 @@ const NavbarHeader: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
     <AppShell.Header>
       <Group h="100%" px="md" justify="space-between">
         <Flex align="center" gap="lg">
-          <Burger
-            opened={isOpen}
-            onClick={() => setIsOpen((prev) => !prev)}
-            aria-label="Toggle navigation"
-            size="sm"
-          />
           {/* <Image style={{ cursor: "pointer" }} height={50} src={logo} /> */}
         </Flex>
         <Flex align="center" gap="md">
