@@ -14,7 +14,6 @@ export interface Payload extends TPostFormSchema {
 
 export const createPost = async (payload: Payload) => {
   let image;
-  console.log(payload);
 
   const storageId = appwriteConfig.postStorageId;
 
