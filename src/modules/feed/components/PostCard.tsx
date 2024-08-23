@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { PostDocument } from "../types";
 import {
   Avatar,
@@ -13,6 +13,7 @@ import {
 } from "@mantine/core";
 import {
   IconBookmark,
+  IconBookmarkFilled,
   IconDots,
   IconHeart,
   IconHeartFilled,
@@ -21,7 +22,9 @@ import { checkIsLiked, multiFormatDateString } from "../../../utils";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../hooks/auth/useAuth";
 import { useLikePost } from "../hooks/useLikePost";
-import { useGetSavedPosts } from "../hooks/useGetSavedPost";
+import { useCreateSave } from "../hooks/useCreateSave";
+import { useDeleteSave } from "../hooks/useDeleteSave";
+import { useGetSavedRecords } from "../hooks/useGetSavedRecords";
 
 interface PostCardProps {
   post: PostDocument;
@@ -34,9 +37,15 @@ const PostCard: FC<PostCardProps> = ({ post }) => {
   const [likeArray, setLikeArray] = useState(likes);
   const [isSaved, setIsSaved] = useState(false);
 
-  const { data: savedPosts } = useGetSavedPosts();
+  const { data: savedRcords } = useGetSavedRecords();
+  const { mutate: savePost, isPending: isSaving } = useCreateSave();
+  const { mutate: deleteSave, isPending: isDeletingSave } = useDeleteSave();
   const { mutate: likePost, isPending: isLiking } = useLikePost();
-  console.log(savedPosts);
+
+  const saveRecord = savedRcords?.documents.find(
+    (save) => save.post.$id === post.$id
+  );
+  console.log(saveRecord);
 
   const navigateEdit = () => {
     navigate("/app/feed/edit-post", { state: post });
@@ -55,6 +64,24 @@ const PostCard: FC<PostCardProps> = ({ post }) => {
     setLikeArray(newLikes); //use newLikes cuz likeArray is not updated in this func
     likePost({ likeArray: newLikes, postId: post.$id });
   };
+
+  const onSave = () => {
+    if (isSaved && saveRecord) {
+      deleteSave(saveRecord?.$id);
+    } else {
+      if (user) {
+        savePost({ userId: user.$id, postId: post.$id });
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (saveRecord) {
+      setIsSaved(true);
+    } else {
+      setIsSaved(false);
+    }
+  }, [saveRecord]);
 
   return (
     <Card radius="md" w={{ xs: 340, md: 300, lg: 380 }} withBorder>
@@ -95,7 +122,11 @@ const PostCard: FC<PostCardProps> = ({ post }) => {
             <Loader size={20} color="grey" />
           ) : user && checkIsLiked(likeArray, user?.$id) ? (
             <Group gap={5}>
-              <IconHeartFilled onClick={onLike} style={{ cursor: "pointer" }} />
+              <IconHeartFilled
+                color="red"
+                onClick={onLike}
+                style={{ cursor: "pointer" }}
+              />
               <Text>{likeArray.length}</Text>
             </Group>
           ) : (
@@ -105,7 +136,17 @@ const PostCard: FC<PostCardProps> = ({ post }) => {
             </Group>
           )}
 
-          <IconBookmark />
+          {isSaving || isDeletingSave ? (
+            <Loader size={20} color="grey" />
+          ) : isSaved ? (
+            <IconBookmarkFilled
+              onClick={onSave}
+              style={{ cursor: "pointer" }}
+              color="blue"
+            />
+          ) : (
+            <IconBookmark onClick={onSave} style={{ cursor: "pointer" }} />
+          )}
         </Group>
       </Stack>
     </Card>

@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { getSavedPosts } from "../services/getSaves";
 import { useAuth } from "../../../hooks/auth/useAuth";
+import { getSavedRecords } from "../services/getSaveRecords";
 
-export const useGetSavedPosts = () => {
+export const useGetSavedRecords = () => {
   const { user } = useAuth();
   return useQuery({
     queryKey: ["save-posts"],
-    queryFn: () => user && getSavedPosts(user?.$id),
+    queryFn: () => user && getSavedRecords(user?.$id),
   });
 };
