@@ -33,7 +33,7 @@ interface PostCardProps {
 const PostCard: FC<PostCardProps> = ({ post }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const likes = post.likes.map((userDoc) => userDoc.$id); //['user id',...]
+  const likes = post.likes.map((userDoc) => userDoc.$id); //['userId',...]
   const [likeArray, setLikeArray] = useState(likes);
   const [isSaved, setIsSaved] = useState(false);
 
@@ -45,7 +45,6 @@ const PostCard: FC<PostCardProps> = ({ post }) => {
   const saveRecord = savedRcords?.documents.find(
     (save) => save.post.$id === post.$id
   );
-  console.log(saveRecord);
 
   const navigateEdit = () => {
     navigate("/app/feed/edit-post", { state: post });
