@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { PostDocument } from "../types";
 import {
   Avatar,
@@ -6,23 +6,54 @@ import {
   Flex,
   Group,
   Image,
+  Loader,
   Menu,
   Stack,
   Text,
 } from "@mantine/core";
-import { IconBookmark, IconDots, IconHeart } from "@tabler/icons-react";
-import { multiFormatDateString } from "../../../utils";
+import {
+  IconBookmark,
+  IconDots,
+  IconHeart,
+  IconHeartFilled,
+} from "@tabler/icons-react";
+import { checkIsLiked, multiFormatDateString } from "../../../utils";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../hooks/auth/useAuth";
+import { useLikePost } from "../hooks/useLikePost";
+import { useGetSavedPosts } from "../hooks/useGetSavedPost";
 
 interface PostCardProps {
   post: PostDocument;
 }
 
 const PostCard: FC<PostCardProps> = ({ post }) => {
+  const { user } = useAuth();
   const navigate = useNavigate();
+  const likes = post.likes.map((userDoc) => userDoc.$id); //['user id',...]
+  const [likeArray, setLikeArray] = useState(likes);
+  const [isSaved, setIsSaved] = useState(false);
+
+  const { data: savedPosts } = useGetSavedPosts();
+  const { mutate: likePost, isPending: isLiking } = useLikePost();
+  console.log(savedPosts);
 
   const navigateEdit = () => {
     navigate("/app/feed/edit-post", { state: post });
+  };
+
+  const onLike = () => {
+    let newLikes = [...likeArray];
+    if (user) {
+      const hasLiked = checkIsLiked(newLikes, user?.$id);
+      if (hasLiked) {
+        newLikes = likeArray.filter((userId) => userId !== user.$id);
+      } else {
+        newLikes.push(user.$id);
+      }
+    }
+    setLikeArray(newLikes); //use newLikes cuz likeArray is not updated in this func
+    likePost({ likeArray: newLikes, postId: post.$id });
   };
 
   return (
@@ -60,7 +91,20 @@ const PostCard: FC<PostCardProps> = ({ post }) => {
         </Flex>
         <Image radius="md" src={post.image} />
         <Group align="center" justify="space-between">
-          <IconHeart />
+          {isLiking ? (
+            <Loader size={20} color="grey" />
+          ) : user && checkIsLiked(likeArray, user?.$id) ? (
+            <Group gap={5}>
+              <IconHeartFilled onClick={onLike} style={{ cursor: "pointer" }} />
+              <Text>{likeArray.length}</Text>
+            </Group>
+          ) : (
+            <Group gap={5}>
+              <IconHeart onClick={onLike} style={{ cursor: "pointer" }} />
+              <Text>{likeArray.length}</Text>
+            </Group>
+          )}
+
           <IconBookmark />
         </Group>
       </Stack>

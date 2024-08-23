@@ -27,6 +27,7 @@ const RegisterForm = () => {
       onSuccess: () => {
         toast.success("User created successfully");
         form.reset();
+        navigate("/login");
       },
       onError: () => {
         toast.error("Something went wrong");

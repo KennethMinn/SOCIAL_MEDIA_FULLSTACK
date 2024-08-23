@@ -7,4 +7,10 @@ export interface PostDocument extends Models.Document {
   image: URL;
   imageId: string;
   author: UserDocument;
+  likes: UserDocument[];
+}
+
+export interface SaveDocument extends Models.Document {
+  post: PostDocument;
+  user: Document;
 }
